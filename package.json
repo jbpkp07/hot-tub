@@ -1,0 +1,17 @@
+{
+  "name": "hot-tub",
+  "version": "1.0.0",
+  "description": "Hot tub time machine",
+  "main": "index.js",
+  "scripts": {
+    "clear:cache": "del-cli ./cache/*",
+    "start": "npm run clear:cache && ts-node-dev --clear --cache-directory ./cache --respawn --"
+  },
+  "author": "Jeremy Barnes",
+  "license": "ISC",
+  "devDependencies": {
+    "del-cli": "^5.0.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.0.4"
+  }
+}
