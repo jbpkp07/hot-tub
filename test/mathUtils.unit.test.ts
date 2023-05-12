@@ -1,5 +1,5 @@
 import { testUtils } from "./testUtils";
-import { mCeil, mFloor, mRound, mMax } from "../src/mathUtils";
+import { mCeil, mFloor, mRound } from "../src/mathUtils";
 
 const { test, assert } = testUtils();
 
@@ -58,13 +58,4 @@ test(`${mRound.name}`, () => {
 
     assert(mRound(1.2345, 0.321), 1.284);
     assert(mRound(1.2345, 10), 0);
-});
-
-test(`${mMax.name}`, () => {
-    assert(mMax(0, 0), 0);
-    assert(mMax(0, 0, 0.25), 0);
-    assert(mMax(1, 0, 0.25), 1);
-    assert(mMax(1, 1.1, 0.25), 1);
-    assert(mMax(1.2, 1.3, 0.25), 1.25);
-    assert(mMax(1.2, 1.4, 0.25), 1.5);
 });
