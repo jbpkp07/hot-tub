@@ -14,8 +14,8 @@ export function calcPostSoakSanitizerDose(params: CalcPostSoakSanitizerDoseParam
     const sanitizerParams = extractSanitizerParams(params);
     const chlorineOunces = calcBatherLoadChlorineOunces(bathers, hours);
 
-    const batherLoadDose = calcBatherLoadDose(sanitizerParams, chlorineOunces);
-    const fcDailyLossDose = calcFcDailyLossDose(sanitizerParams, tubGals, fcDailyLossPPM);
+    const batherLoadDose = calcSanitizerDose({ ...sanitizerParams, chlorineOunces });
+    const fcDailyLossDose = calcSanitizerDose({ ...sanitizerParams, tubGals, fcIncreasePPM: fcDailyLossPPM });
 
     return mRound(batherLoadDose + fcDailyLossDose, toNearest);
 }
@@ -38,14 +38,4 @@ function calcBatherLoadChlorineOunces(bathers: number, hours: number): number {
     const tar = pow(b, 1.375) * pow(h, 0.5) * 0.0905;
 
     return max(min, tar);
-}
-
-function calcBatherLoadDose(sanitizerParams: SanitizerParams, chlorineOunces: number): number {
-    return calcSanitizerDose({ ...sanitizerParams, chlorineOunces });
-}
-
-function calcFcDailyLossDose(sanitizerParams: SanitizerParams, tubGals: number, fcDailyLossPPM: number): number {
-    const fcIncreasePPM = fcDailyLossPPM;
-
-    return calcSanitizerDose({ ...sanitizerParams, tubGals, fcIncreasePPM });
 }
