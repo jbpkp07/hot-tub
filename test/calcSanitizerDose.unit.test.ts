@@ -10,18 +10,17 @@ test("Precision test", () => {
         toNearest: 0.001 as const
     };
 
-    assert(calcSanitizerDose({ ...params, chlorinePercent: 7.5, sanitizer: "bleach_floz" }), 7.565);
-    assert(calcSanitizerDose({ ...params, chlorinePercent: 55.45, sanitizer: "dichlor_floz" }), 1.028);
-    assert(calcSanitizerDose({ ...params, chlorinePercent: 55.45, sanitizer: "dichlor_oz" }), 1.098);
+    assert(calcSanitizerDose({ ...params, sanitizerChlorinePercent: 7.5, sanitizer: "bleach_floz" }), 7.565);
+    assert(calcSanitizerDose({ ...params, sanitizerChlorinePercent: 55.45, sanitizer: "dichlor_floz" }), 1.028);
+    assert(calcSanitizerDose({ ...params, sanitizerChlorinePercent: 55.45, sanitizer: "dichlor_oz" }), 1.098);
 });
 
 test("Bleach fl oz: calculator values", () => {
     const params = {
         tubGals: 285,
-        fcIncreasePPM: 0.5,
-        chlorinePercent: 7.5 as const,
         toNearest: 0.1 as const,
-        sanitizer: "bleach_floz" as const
+        sanitizer: "bleach_floz" as const,
+        sanitizerChlorinePercent: 7.5 as const
     };
 
     assert(calcSanitizerDose({ ...params, fcIncreasePPM: 0.5 }), 0.2);
@@ -36,26 +35,26 @@ test("Bleach fl oz: calculator values", () => {
 test("Bleach fl oz: 0.25 increments", () => {
     const params = {
         tubGals: 285,
-        fcIncreasePPM: 0.5,
-        chlorinePercent: 7.5 as const,
-        sanitizer: "bleach_floz" as const
+        toNearest: 0.25 as const,
+        sanitizer: "bleach_floz" as const,
+        sanitizerChlorinePercent: 7.5 as const
     };
 
     assert(calcSanitizerDose({ ...params, fcIncreasePPM: 0.5 }), 0.25);
     assert(calcSanitizerDose({ ...params, fcIncreasePPM: 1.0 }), 0.5);
     assert(calcSanitizerDose({ ...params, fcIncreasePPM: 2.0 }), 1.0);
     assert(calcSanitizerDose({ ...params, fcIncreasePPM: 4.0 }), 2.0);
-    assert(calcSanitizerDose({ ...params, fcIncreasePPM: 8.0 }), 4.0);
-    assert(calcSanitizerDose({ ...params, fcIncreasePPM: 16.0 }), 7.75);
-    assert(calcSanitizerDose({ ...params, fcIncreasePPM: 25.0 }), 12);
+    assert(calcSanitizerDose({ ...params, fcIncreasePPM: 8.0 }), 3.75);
+    assert(calcSanitizerDose({ ...params, fcIncreasePPM: 16.0 }), 7.5);
+    assert(calcSanitizerDose({ ...params, fcIncreasePPM: 25.0 }), 11.75);
+    assert(calcSanitizerDose({ ...params, fcIncreasePPM: 25.0 }), 11.75);
 });
 
 test("Dichlor fl oz: calculator values", () => {
     const params = {
         tubGals: 285,
-        fcIncreasePPM: 0.5,
-        chlorinePercent: 55.45 as const,
-        sanitizer: "dichlor_floz" as const
+        sanitizer: "dichlor_floz" as const,
+        sanitizerChlorinePercent: 55.45 as const
     };
 
     assert(calcSanitizerDose({ ...params, fcIncreasePPM: 0.5 }), 0.03);
@@ -70,9 +69,8 @@ test("Dichlor fl oz: calculator values", () => {
 test("Dichlor oz: calculator values", () => {
     const params = {
         tubGals: 285,
-        fcIncreasePPM: 0.5,
-        chlorinePercent: 55.45 as const,
-        sanitizer: "dichlor_oz" as const
+        sanitizer: "dichlor_oz" as const,
+        sanitizerChlorinePercent: 55.45 as const
     };
 
     assert(calcSanitizerDose({ ...params, fcIncreasePPM: 0.5 }), 0.03);
@@ -82,4 +80,15 @@ test("Dichlor oz: calculator values", () => {
     assert(calcSanitizerDose({ ...params, fcIncreasePPM: 8.0 }), 0.55);
     assert(calcSanitizerDose({ ...params, fcIncreasePPM: 16.0 }), 1.1);
     assert(calcSanitizerDose({ ...params, fcIncreasePPM: 25.0 }), 1.72);
+});
+
+test("Have chlorine ounces", () => {
+    const params = {
+        chlorineOunces: 1.0,
+        toNearest: 0.01 as const
+    };
+
+    assert(calcSanitizerDose({ ...params, sanitizer: "bleach_floz", sanitizerChlorinePercent: 7.5 }), 12.43);
+    assert(calcSanitizerDose({ ...params, sanitizer: "dichlor_floz", sanitizerChlorinePercent: 55.45 }), 1.69);
+    assert(calcSanitizerDose({ ...params, sanitizer: "dichlor_oz", sanitizerChlorinePercent: 55.45 }), 1.8);
 });

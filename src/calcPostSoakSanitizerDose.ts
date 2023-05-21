@@ -1,42 +1,51 @@
-import { calcSanitizerDose, CalcBleachOuncesParams, CalcDichlorOuncesParams } from "./calcSanitizerDose";
-import { mCeil, mRound } from "./mathUtils";
+import { calcSanitizerDose, SanitizerParams } from "./calcSanitizerDose";
+import { max, mRound, pow } from "./mathUtils";
 
-interface BaseParams {
+interface CalcPostSoakSanitizerDoseParams extends SanitizerParams {
     readonly bathers: number;
+    readonly hours: number;
     readonly fcDailyLossPPM: number;
-    readonly fcPreSoakPPM: number;
-    readonly fcPostSoakPPM: number;
+    readonly tubGals: number;
 }
-
-type CalcPostSoakSanitizerDoseParams = BaseParams &
-    (Omit<CalcBleachOuncesParams, "fcIncreasePPM"> | Omit<CalcDichlorOuncesParams, "fcIncreasePPM">);
 
 export function calcPostSoakSanitizerDose(params: CalcPostSoakSanitizerDoseParams): number {
-    const fcIncreasePPM = calcFcIncreasePPM(params);
+    const { bathers, hours, tubGals, fcDailyLossPPM, toNearest } = params;
 
-    return calcSanitizerDose({ ...params, fcIncreasePPM });
+    const sanitizerParams = extractSanitizerParams(params);
+    const chlorineOunces = calcBatherLoadChlorineOunces(bathers, hours);
+
+    const batherLoadDose = calcBatherLoadDose(sanitizerParams, chlorineOunces);
+    const fcDailyLossDose = calcFcDailyLossDose(sanitizerParams, tubGals, fcDailyLossPPM);
+
+    return mRound(batherLoadDose + fcDailyLossDose, toNearest);
 }
 
-function calcFcIncreasePPM(params: BaseParams): number {
-    const { bathers, fcDailyLossPPM, fcPreSoakPPM, fcPostSoakPPM } = params;
-    const fcLossPPM = fcPreSoakPPM - fcPostSoakPPM;
+function extractSanitizerParams(fromParams: CalcPostSoakSanitizerDoseParams): SanitizerParams {
+    const { sanitizer, sanitizerChlorinePercent, toNearest } = fromParams;
 
-    if (bathers > 0 && fcLossPPM > 0) {
-        const fcTargetIncreasePPM = bathers ** 0.8 * calcMultFactor(fcLossPPM) + fcDailyLossPPM;
-        const fcMinIncreasePPM = calcFcMinIncreasePPM(bathers, fcDailyLossPPM);
+    return { sanitizer, sanitizerChlorinePercent, toNearest };
+}
 
-        return Math.max(fcTargetIncreasePPM, fcMinIncreasePPM);
+function calcBatherLoadChlorineOunces(bathers: number, hours: number): number {
+    if (bathers <= 0 || hours <= 0) {
+        return 0;
     }
 
-    return fcDailyLossPPM;
+    const b = bathers;
+    const h = max(hours - 0.5, 0);
+
+    const min = b * 0.025;
+    const tar = pow(b, 1.375) * pow(h, 0.5) * 0.0905;
+
+    return max(min, tar);
 }
 
-function calcMultFactor(quantity: number): number {
-    const nonNegligible = Math.max(quantity - 0.5, 0);
-
-    return Math.sqrt(nonNegligible) * 2.225;
+function calcBatherLoadDose(sanitizerParams: SanitizerParams, chlorineOunces: number): number {
+    return calcSanitizerDose({ ...sanitizerParams, chlorineOunces });
 }
 
-function calcFcMinIncreasePPM(bathers: number, fcDailyLossPPM: number): number {
-    return bathers * 0.5 + fcDailyLossPPM;
+function calcFcDailyLossDose(sanitizerParams: SanitizerParams, tubGals: number, fcDailyLossPPM: number): number {
+    const fcIncreasePPM = fcDailyLossPPM;
+
+    return calcSanitizerDose({ ...sanitizerParams, tubGals, fcIncreasePPM });
 }

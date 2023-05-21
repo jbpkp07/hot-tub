@@ -1,3 +1,5 @@
+export const { abs, max, pow, sqrt } = Math;
+
 export function mCeil(num: number, toNearest = 1): number {
     return roundToNearest({ method: "ceil", num, toNearest });
 }
@@ -18,7 +20,7 @@ type RoundToNearestParams = {
 
 function roundToNearest(params: RoundToNearestParams): number {
     const { method, num, toNearest } = params;
-    const { abs, [method]: round } = Math;
+    const { [method]: round } = Math;
 
     const roundedNum = toNearest ? round(num / abs(toNearest)) * abs(toNearest) : round(num);
     const fractionDigits = countFractionDigits(toNearest);
