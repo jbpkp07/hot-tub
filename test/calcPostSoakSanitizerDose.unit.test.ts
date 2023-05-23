@@ -18,25 +18,25 @@ test("Hours bleach estimate", () => {
     assert(calcPostSoakSanitizerDose({ ...params, bathers: 1, hours: 0 }), 0.5);
 
     // 1 Bather
-    assert(calcPostSoakSanitizerDose({ ...params, bathers: 1, hours: 0.25 }), 0.75); // real data point: 1b x 0.25h = 0.75
-    assert(calcPostSoakSanitizerDose({ ...params, bathers: 1, hours: 0.75 }), 1.0); // real data point: 1b x 0.75h = 1.00/1.25
+    assert(calcPostSoakSanitizerDose({ ...params, bathers: 1, hours: 0.25 }), 0.75); // real data point: 1b x 0.25h = [0.75]
+    assert(calcPostSoakSanitizerDose({ ...params, bathers: 1, hours: 0.75 }), 1.0); // real data point: 1b x 0.75h = [1.00/1.25]
 
     assert(calcPostSoakSanitizerDose({ ...params, bathers: 1, hours: 1.0 }), 1.25); // real data point: 1b x 1.00h = [1.25, 1.25]
     assert(calcPostSoakSanitizerDose({ ...params, bathers: 1, hours: 1.25 }), 1.5); // real data point: 1b x 1.25h = [1.50, 1.25]
-    assert(calcPostSoakSanitizerDose({ ...params, bathers: 1, hours: 1.5 }), 1.5); // real data point: 1b x 1.5h = 1.50
-    assert(calcPostSoakSanitizerDose({ ...params, bathers: 1, hours: 1.75 }), 1.75); // real data point: 1b x 1.75h = [1.75, 2.00, 2.00]
+    assert(calcPostSoakSanitizerDose({ ...params, bathers: 1, hours: 1.5 }), 1.75); // real data point: 1b x 1.5h = [1.50]
+    assert(calcPostSoakSanitizerDose({ ...params, bathers: 1, hours: 1.75 }), 2.0); // real data point: 1b x 1.75h = [1.75, 2.00, 2.00, 2.00]
 
     assert(calcPostSoakSanitizerDose({ ...params, bathers: 1, hours: 2.0 }), 2.0); // real data point: 1b x 2.0h = [2.25, 2.00/2.25]
-    assert(calcPostSoakSanitizerDose({ ...params, bathers: 1, hours: 2.5 }), 2.0); // real data point: 1b x 2.5h = 2.00
-    assert(calcPostSoakSanitizerDose({ ...params, bathers: 1, hours: 3.0 }), 2.25); // real data point: 1b x 3h = 2.25
+    assert(calcPostSoakSanitizerDose({ ...params, bathers: 1, hours: 2.5 }), 2.25); // real data point: 1b x 2.5h = [2.00]
+    assert(calcPostSoakSanitizerDose({ ...params, bathers: 1, hours: 3.0 }), 2.5); // real data point: 1b x 3h = [2.25]
 
     // 2 Bathers
-    assert(calcPostSoakSanitizerDose({ ...params, bathers: 2, hours: 1.0 }), 2.5); // real data point: 2b x 1h = 2.50/2.75
-    assert(calcPostSoakSanitizerDose({ ...params, bathers: 2, hours: 1.75 }), 3.75); // real data point: 2b x 1.75h = 3.50/3.75 (chris + jeremy, dubious results)
+    assert(calcPostSoakSanitizerDose({ ...params, bathers: 2, hours: 1.0 }), 2.75); // real data point: 2b x 1h = [2.50/2.75]
+    assert(calcPostSoakSanitizerDose({ ...params, bathers: 2, hours: 1.75 }), 4.0); // real data point: 2b x 1.75h = [3.50/3.75] (chris + jeremy, dubious results)
 
     // Various Bathers
-    assert(calcPostSoakSanitizerDose({ ...params, bathers: 1.667, hours: 1.5 }), 2.75); // real data point: 2b x 1h + 1b x 0.5h = 2.75/3.00
-    assert(calcPostSoakSanitizerDose({ ...params, bathers: 1.5, hours: 1.0 }), 2.0); // real data point: 1.5b x 1h = 1.75/2.00 (kelsey + jeremy, dubious results)
+    assert(calcPostSoakSanitizerDose({ ...params, bathers: 1.667, hours: 1.5 }), 3.00); // real data point: 2b x 1h + 1b x 0.5h = [2.75/3.00]
+    assert(calcPostSoakSanitizerDose({ ...params, bathers: 1.5, hours: 1.0 }), 2.0); // real data point: 1.5b x 1h = [1.75/2.00] (kelsey + jeremy, dubious results)
 
     // Different tub size
     assert(calcPostSoakSanitizerDose({ ...params, fcDailyLossPPM: 0.1, tubGals: 2850, bathers: 1, hours: 1.0 }), 1.25);

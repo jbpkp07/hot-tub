@@ -35,7 +35,7 @@ function calcBatherLoadChlorineOunces(bathers: number, hours: number): number {
     const h = max(hours - 0.5, 0);
 
     const min = b * 0.025;
-    const tar = pow(b, 1.375) * pow(h, 0.5) * 0.0905;
+    const tar = pow(b, 1.375) * pow(h, 0.5) * 0.099;
 
     return max(min, tar);
 }
