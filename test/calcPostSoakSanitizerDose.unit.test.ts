@@ -32,7 +32,7 @@ test("Hours bleach estimate", () => {
 
     // 2 Bathers
     assert(calcPostSoakSanitizerDose({ ...params, bathers: 2, hours: 1.0 }), 2.75); // real data point: 2b x 1h = [2.50/2.75]
-    assert(calcPostSoakSanitizerDose({ ...params, bathers: 2, hours: 1.75 }), 4.0); // real data point: 2b x 1.75h = [3.50/3.75] (chris + jeremy, dubious results)
+    assert(calcPostSoakSanitizerDose({ ...params, bathers: 2, hours: 1.75 }), 3.75); // real data point: 2b x 1.75h = [3.50/3.75] (chris + jeremy, dubious results)
 
     // Various Bathers
     assert(calcPostSoakSanitizerDose({ ...params, bathers: 1.667, hours: 1.5 }), 3.00); // real data point: 2b x 1h + 1b x 0.5h = [2.75/3.00]
